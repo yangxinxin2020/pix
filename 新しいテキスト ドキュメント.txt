@@ -382,4 +382,85 @@ End Sub
 '##
 '##End Sub
 '##E FC-3779-007
+'##S FC-14341-001 2016/06/07 FXS)段(障害修正:写真取込ツールから画像を正しく取得できない場合がある)
+'##Public Sub ViewFit(w_ObjLed As LEAD)
+Public Sub ViewFit(w_ObjLed As LEAD, Optional intFlg As Integer)
+'##E FC-14341-001
+    '''エラートラップ
+    On Error GoTo ViewFit_Err
+    '''開始ログ
+    Output.Log App.EXEName, "frmMain", "ViewFit", eLg08MethodStart, "イメージ幅変更"
+    
+    'アスペクト比保存用の変数を宣言します。
+    Dim HeightFactor As Long
+    Dim WidthFactor As Long
+    Dim HeightAllowed As Long
+    Dim WidthAllowed As Long
+
+    With w_ObjLed
+'##S FC-14341-002 2016/06/07 FXS)段(障害修正:写真取込ツールから画像を正しく取得できない場合がある)
+'##        '読み込んだ画像に対する変更を無効にします。
+'##
+'##        .AutoSetRects = False
+'##        .BackErase = False
+        If intFlg <> 1 Then
+            '読み込んだ画像に対する変更を無効にします。
+            .AutoSetRects = False
+            .BackErase = False
+        End If
+'##E FC-14341-002
+        
+        'アスペクト比変数を設定します(フォームの1/8 サイズ)。
+        .ScaleMode = 1
+        HeightFactor = .BitmapHeight
+        WidthFactor = .BitmapWidth
+        HeightAllowed = .ScaleHeight
+        WidthAllowed = .ScaleWidth
+    
+        'アスペクト比をもとに、LEADコントロールをフォームの中央に配置します。
+        'ビットマップの最大幅を利用すると画像の高さが高くなりすぎるので注意します。
+        '結果をもとにコントロールの大きさを設定します。
+        
+        If (WidthAllowed / WidthFactor) <= (HeightAllowed / HeightFactor) Then
+            WidthAllowed = WidthFactor * (WidthAllowed / WidthFactor)
+            HeightAllowed = HeightFactor * (WidthAllowed / WidthFactor)
+        Else
+            WidthAllowed = WidthFactor * (HeightAllowed / HeightFactor)
+            HeightAllowed = HeightFactor * (HeightAllowed / HeightFactor)
+        End If
+
+'##S FC-14341-003 2016/06/07 FXS)段(障害修正:写真取込ツールから画像を正しく取得できない場合がある)
+'##            'LEADコントロールの大きさに合うよう、画像の表示サイズを設定します。
+'##            .SetSrcRect 0, 0, WidthFactor - 30, HeightFactor - 30
+'##            .SetDstRect 0, 0, WidthAllowed - 30, HeightAllowed - 30
+'##            .SetDstClipRect 0, 0, WidthAllowed - 30, HeightAllowed - 30
+        If intFlg <> 1 Then
+             'LEADコントロールの大きさに合うよう、画像の表示サイズを設定します。
+            .SetSrcRect 0, 0, WidthFactor - 30, HeightFactor - 30
+            .SetDstRect 0, 0, WidthAllowed - 30, HeightAllowed - 30
+            .SetDstClipRect 0, 0, WidthAllowed - 30, HeightAllowed - 30
+        Else
+            'サイズを設定
+            .Size WidthAllowed - 30, HeightAllowed - 30, RESIZE_NORMAL
+            '設定されたサイズにリサイズ
+            .PaintSizeMode = PAINTSIZEMODE_NORMAL
+        End If
+'##E FC-14341-003
+        
+        '読み込んだ画像に対する変更を有効にする。
+        .AutoSetRects = True
+        .ForceRepaint
+    End With
+
+    '''終了ログ
+    Output.Log App.EXEName, "frmMain", "ViewFit", eLg09MethodEnd, "イメージ幅変更"
+
+Exit Sub
+ViewFit_Err:
+    
+    Output.Log App.EXEName, "frmMain", "ViewFit", eLg06Information, "イメージ幅変更"
+
+End Sub
+
+
 
