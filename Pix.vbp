@@ -1,13 +1,12 @@
 Type=Exe
-Form=D:\Downloads\vb-main\vb-main\frmMain.frm
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\Windows\SysWOW64\stdole2.tlb#OLE Automation
-Module=public; D:\Downloads\vb-main\vb-main\public.bas
+Form=frmMain.frm
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#C:\Windows\SysWOW64\stdole2.tlb#OLE Automation
+Module=public; public.bas
 Object={0E7E54C4-1AED-4D84-8C41-72753B63DD34}#1.0#0; QQPhotoDrawEx.dll
 Object={7586B340-EC08-11D0-A466-00C04FC30DF6}#1.0#0; oleprn.dll
 IconForm="frmMain"
 Startup="frmMain"
 ExeName32="Pix.exe"
-Path32="D:\Downloads\vb-main\vb-main"
 Command32=""
 Name="Pix"
 HelpContextID="0"
